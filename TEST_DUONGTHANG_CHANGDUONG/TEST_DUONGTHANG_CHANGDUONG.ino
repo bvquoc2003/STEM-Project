@@ -194,12 +194,13 @@ void tangtoc(int tocDoGiamBanhM1, int tocDoGiamBanhM2) {
    if(analogRead(A4) > F[4] && analogRead(A3) < F[3]){
     _kmotor.tien(0, 255);
     _kmotor.tien(1, 255-dolech+10);
+    // 0: banh trai, 1: banh phai
   } 
   
     
   if(analogRead(A4) < F[4] && analogRead(A3) > F[3]){
     _kmotor.tien(0, 255);
-    _kmotor.tien(1, 255 -dolech-10);
+    _kmotor.tien(1, 255-dolech-10);
   } 
 
 
@@ -213,13 +214,13 @@ void tangtoc(int tocDoGiamBanhM1, int tocDoGiamBanhM2) {
   } 
   
   if(analogRead(A4) > F[4] && analogRead(A7) > F[7]){
-    _kmotor.tien(0, 10);
+    _kmotor.tien(0, 50);
     _kmotor.tien(1, 255);
   }
   
   if(analogRead(A3) > F[3] && analogRead(A2) > F[2]){
     _kmotor.tien(0, 255);
-    _kmotor.tien(1, 10);
+    _kmotor.tien(1, 40);
   }
   
 
