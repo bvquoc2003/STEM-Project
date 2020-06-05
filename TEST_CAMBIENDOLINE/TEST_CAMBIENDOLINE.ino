@@ -16,7 +16,7 @@ float rpm1;
 float rpm2;
 
 #define PIN_DO1 2
-#define PIN_DO2 3
+#define PIN_DO2 10
 
 
 volatile unsigned int pulses1;
