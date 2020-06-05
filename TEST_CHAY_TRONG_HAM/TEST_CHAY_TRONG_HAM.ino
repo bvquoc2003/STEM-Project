@@ -185,7 +185,7 @@ void loop() {
     }
     _kmotor.tien(0,255);
     _kmotor.tien(1,255);
-    if (demSoLo1 == 13) {
+    if (demSoLo1 == 10) {
       isStop = true;
     }
     return;
@@ -195,7 +195,7 @@ void loop() {
     _kmotor.tien(1,255);
   } else if (demSoLo1 <= 53){
     _kmotor.tien(0,255);
-    _kmotor.tien(1,52);
+    _kmotor.tien(1,57);
   } else {
     _kmotor.tien(0,0);
     _kmotor.tien(1,0);
