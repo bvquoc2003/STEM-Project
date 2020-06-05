@@ -173,7 +173,7 @@ void XuLySoLo2() {
 
 int dolech = 16;
 int changDuong = 0;
-int time_changDuong = 5000;
+int time_changDuong = 500;
 int oldChangDuong = 0;
 int demChang =0;
 void loop() {
@@ -183,27 +183,25 @@ void loop() {
 
   
    check();
-   if(soCamBien >=6){
+   if(soCamBien >=6 && millis() >= time_changDuong){
     changDuong++;
-    time_changDuong=2000;
+    time_changDuong+=millis();
 
    }
   
     soCamBien = 0;
     
-    if(changDuong!=oldChangDuong && millis() >= time_changDuong){
+    if(changDuong!=oldChangDuong){
       oldChangDuong = changDuong;
-      demChang++; 
-      //time_changDuong += millis();
+      demChang++;
     }
-
     Serial.println(demChang);
-
       switch(demChang){
         case 0:
            tangtoc(0,0);
         break;
         case 1: 
+          // DOAN CUAAAAAAAAAAAAAAAAAAAAAAAAAAaa
           digitalWrite(13, HIGH);
           _kmotor.tien(0,255);
           _kmotor.tien(1,175);
