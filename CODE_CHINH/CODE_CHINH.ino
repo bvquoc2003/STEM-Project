@@ -234,9 +234,9 @@ float sieuam(int trig,int echo){
 int giatricua = 5;
 int lancua = 0;
 void chayham(){
-   if(sieuam(2,12) <= 10){
-    _kmotor.tien(0,255);
-    _kmotor.tien(1,100);
+   if(sieuam(2,12) <= 8){
+    _kmotor.tien(0,200);
+    _kmotor.tien(1,75);
 
    } else {
       _kmotor.tien(0,255);
@@ -248,41 +248,52 @@ void chayham(){
 int time_now = 0;
 int OK_ChayThang = 1;
 int OK_GapVach = 1;
+int ok_chayham = 0;
 void loop() {
-  //Serial.println(sieuam(2,12));
+    kiemtravach();
+   Serial.println (demencoder);
+   Serial.println("----");
+   if(OK_ChayThang==1){
+       chaythang();
+       OK_ChayThang = 0;
+   }
 
-  if(lancua==0){
-    chayham();
-  } else{
-    _kmotor.tien(0,0);
-    _kmotor.tien(1,0);
-  }
-//  kiemtravach();
+
+   
+   if(ok_chayham == 0)
+    dolinecong();  
+
+
+    
+   if(socambien >=6 && OK_GapVach == 1 && ok_chayham == 0){
+    digitalWrite(13,HIGH);
+    OK_GapVach = 2;
+    time_now = millis();
+    ok_chayham = 1;
+   } 
+     if(ok_chayham == 1 && OK_GapVach == 2){
+        chayham();
+      } 
+
+   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+2000 && ok_chayham == 1){
+        digitalWrite(13,LOW);
+        ok_chayham = 0;
   
-//   Serial.println(socambien);
-//
-//   if(socambien >=6 && OK_GapVach == 1){
-//       _kmotor.tien(0,50);
-//    _kmotor.tien(1,50);  
-//    digitalWrite(13,HIGH);
-//    OK_GapVach = 2;
-//    time_now = millis();
-//   } else {
-//    _kmotor.tien(0,0);
-//    _kmotor.tien(1,0);  
-//    }
-//   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+5000 ){
-//        digitalWrite(13,LOW);
-//        //goi lai ham do line
-//   }
+   }
+   
+
 //   Serial.println (demencoder);
 //   Serial.println("----");
 //   if(OK_ChayThang==1){
 //       chaythang ();
 //       OK_ChayThang = 0;
 //   }
+//   
 //    dolinecong();
-////   if ((a == 0)&&(demencoder <=390)){
+//
+
+    
+//   if ((a == 0)&&(demencoder <=390)){
 //     dolinethang();
 //     b = 1;
 //   }
@@ -293,7 +304,7 @@ void loop() {
 //     if ((c == 1)&&(demencoder >= 650)){
 //     dolinethang();
 //   }
-//        if ((demencoder >= 950)){
+//        if (demencoder >= 950){
 //     dung();
 //   }
    socambien = 0;
