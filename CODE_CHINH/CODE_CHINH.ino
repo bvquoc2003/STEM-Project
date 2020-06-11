@@ -23,6 +23,12 @@ int b = 0;
 int c = 0;
 int demencoder = 0;
 
+
+const int trig = 2;    
+const int echo = 12;  
+
+
+
 void setup() {
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);  
@@ -32,9 +38,17 @@ void setup() {
   pinMode(A7, INPUT);
   pinMode(A6, INPUT);
   pinMode(A5, INPUT);
+
+  pinMode(13,OUTPUT);
+  
   _kmotor.cauhinh();
   attachInterrupt (0,encoder,RISING);
   Serial.begin(9600);
+
+    pinMode(trig,OUTPUT);   
+    pinMode(echo,INPUT); 
+
+  
 }
 
 void encoder(){
@@ -169,6 +183,26 @@ if (analogRead(A4) > cb4 && analogRead(A6) < cb6) {
     _kmotor.tien(1, (1 * M2_1));
   }
  }
+int socambien = 0;
+void kiemtravach(){
+  if(analogRead(A0) > cb0)
+    socambien++;
+  if(analogRead(A1) > cb1)
+    socambien++;
+  if(analogRead(A2) > cb2)
+    socambien++;
+  if(analogRead(A3) > cb3)
+    socambien++;
+  if(analogRead(A4) > cb4)
+    socambien++;
+  if(analogRead(A5) > cb5)
+    socambien++;
+  if(analogRead(A6) > cb6)
+    socambien++;
+  if(analogRead(A7) > cb7)
+    socambien++;
+    
+}
  
  void chaythang (){
   for (int i = 0;i<=250;i+=10){
@@ -183,20 +217,72 @@ if (analogRead(A4) > cb4 && analogRead(A6) < cb6) {
     _kmotor.tien(1,0);  
   }
 
-  
-   
+float sieuam(int trig,int echo){
+          float dem=0;
+            pinMode(trig,OUTPUT);
+            digitalWrite(trig,LOW);
+            delayMicroseconds(2);
+            digitalWrite(trig,HIGH);
+            delayMicroseconds(10);
+            digitalWrite(trig,LOW);
+            pinMode(echo, INPUT);
+            dem = pulseIn(echo,HIGH,30000)/58.0;
+            if(dem==0) dem=30;
+            return dem;
+}
 
-int OK_ChayThang = 1;
-void loop() {
+int giatricua = 5;
+int lancua = 0;
+void chayham(){
+   if(sieuam(2,12) <= 10){
+    _kmotor.tien(0,255);
+    _kmotor.tien(1,100);
 
-   Serial.println (demencoder);
-   Serial.println("----");
-   if(OK_ChayThang==1){
-       chaythang ();
-       OK_ChayThang = 0;
+   } else {
+      _kmotor.tien(0,255);
+      _kmotor.tien(1,255);
    }
-    dolinecong();
-//   if ((a == 0)&&(demencoder <=390)){
+}
+
+    
+int time_now = 0;
+int OK_ChayThang = 1;
+int OK_GapVach = 1;
+void loop() {
+  //Serial.println(sieuam(2,12));
+
+  if(lancua==0){
+    chayham();
+  } else{
+    _kmotor.tien(0,0);
+    _kmotor.tien(1,0);
+  }
+//  kiemtravach();
+  
+//   Serial.println(socambien);
+//
+//   if(socambien >=6 && OK_GapVach == 1){
+//       _kmotor.tien(0,50);
+//    _kmotor.tien(1,50);  
+//    digitalWrite(13,HIGH);
+//    OK_GapVach = 2;
+//    time_now = millis();
+//   } else {
+//    _kmotor.tien(0,0);
+//    _kmotor.tien(1,0);  
+//    }
+//   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+5000 ){
+//        digitalWrite(13,LOW);
+//        //goi lai ham do line
+//   }
+//   Serial.println (demencoder);
+//   Serial.println("----");
+//   if(OK_ChayThang==1){
+//       chaythang ();
+//       OK_ChayThang = 0;
+//   }
+//    dolinecong();
+////   if ((a == 0)&&(demencoder <=390)){
 //     dolinethang();
 //     b = 1;
 //   }
@@ -210,5 +296,5 @@ void loop() {
 //        if ((demencoder >= 950)){
 //     dung();
 //   }
-
+   socambien = 0;
 }
