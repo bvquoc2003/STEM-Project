@@ -275,12 +275,16 @@ void loop() {
         chayham();
       } 
 
-   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+2000 && ok_chayham == 1){
+   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+1000 && ok_chayham == 1){
         digitalWrite(13,LOW);
-        ok_chayham = 0;
-  
+        ok_chayham = 0; 
+        OK_GapVach = 3;
    }
-   
+
+   if(OK_GapVach == 3 && socambien >= 6 && millis() > time_now+1000){
+    dung();
+    delay(100000);
+   }
 
 //   Serial.println (demencoder);
 //   Serial.println("----");
