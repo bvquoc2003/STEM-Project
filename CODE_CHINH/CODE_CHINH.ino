@@ -28,6 +28,20 @@ int demencoder = 0;
 const int trig = 2;    
 const int echo = 12;  
 
+//ENCODER INIT
+float rpm1;
+
+
+#define PIN_DO1 10
+volatile unsigned int pulses1;
+
+
+unsigned long timeOld1;
+
+
+
+#define HOLES_DISC 20
+
 
 
 void setup() {
@@ -43,7 +57,12 @@ void setup() {
   pinMode(13,OUTPUT);
  
   _kmotor.cauhinh();
-  attachInterrupt (2,encoder,RISING);
+   pinMode(PIN_DO1, INPUT);
+  pulses1 = 0;
+  
+  attachInterrupt(digitalPinToInterrupt(PIN_DO1), counter1, FALLING);
+
+
   Serial.begin(9600);
 
     pinMode(trig,OUTPUT);   
@@ -52,10 +71,11 @@ void setup() {
   
 }
 
-void encoder(){
-  if (digitalRead(4) == 1)
-    demencoder++; 
+void counter1()
+{
+  pulses1++;
 }
+
 
 void dolinethang (){
   if (analogRead(A0) > cb0 && analogRead(A1) < cb1) {
@@ -206,12 +226,42 @@ void kiemtravach(){
     socambien++;
     
 }
- 
+
+
+int demSoLo1 = 0;
+int item1 = 0;
+int oldItem1 = 0;
+
+
+
+
+
+ void XuLySoLo1() {
+  if (millis() - timeOld1 >= 0)
+  {
+    detachInterrupt(digitalPinToInterrupt(PIN_DO1));
+    rpm1 = (pulses1 * 60) / (HOLES_DISC);
+
+    item1 = digitalRead(PIN_DO1);
+
+    if (item1 != oldItem1  ) {
+      demSoLo1 ++;
+      oldItem1 = item1;
+    }
+
+
+
+    timeOld1 = millis();
+
+    attachInterrupt(digitalPinToInterrupt(PIN_DO1), counter1, FALLING);
+  }
+}
+
  void chaythang (){
   for (int i = 0;i<=250;i+=10){
     _kmotor.tien(0, i);
     _kmotor.tien(1, (i - i * 0.05));
-  delay(20);
+  delay(40);
   Serial.println (i);
   }
 
@@ -261,109 +311,76 @@ int OK_GapVach = 1;
 int ok_chayham = 0;
 void loop() {
     kiemtravach();
-//   if(OK_ChayThang==1){
-//       chaythang();
-//       OK_ChayThang = 0;
-//   }
-//   
-
-   encoder();
-   Serial.println(demencoder);
-//   if(ok_chayham == 0){
-//    M1_1 = 250;
-//    M2_1 = 250;
-//
-//   dolinecong();
-//   }
-//      
+   if(OK_ChayThang==1){
+       chaythang();
+       OK_ChayThang = 0;
+   }
    
-//
-//    
-//   if(OK_GapVach == 1 && socambien >= 7 && ok_chayham == 0){
-//    digitalWrite(13,HIGH);
-//    OK_GapVach = 2;
-//    time_now = millis();
-//    ok_chayham = 1;
-//   } 
-//     if(ok_chayham == 1 && OK_GapVach == 2){
-//        chayham();
-//        Serial.println(sieuam(2,12));
-//      } 
-//
-//   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+1000 && ok_chayham == 1){
-//        digitalWrite(13,LOW);
-//        ok_chayham = 0; 
-//        OK_GapVach = 3;
-//        time_now = millis();
-//   }
+   
+   XuLySoLo1();
+   if(ok_chayham == 0){
+   dolinecong();
+   }
+      
+   
+
+    
+   if(OK_GapVach == 1 && socambien >= 7 && ok_chayham == 0){
+    digitalWrite(13,HIGH);
+    OK_GapVach = 2;
+    time_now = millis();
+    ok_chayham = 1;
+   } 
+     if(ok_chayham == 1 && OK_GapVach == 2){
+        chayham();
+        Serial.println(sieuam(2,12));
+      } 
+
+   if(OK_GapVach == 2 && socambien >=6 && millis() > time_now+1000 && ok_chayham == 1){
+        digitalWrite(13,LOW);
+        ok_chayham = 0; 
+        OK_GapVach = 3;
+        time_now = millis();
+        demSoLo1 = 0;
+   }
+   if(OK_GapVach == 3){
+    if (demSoLo1/2 >= 200){
+       M1_1 = 150;
+       M2_1 = 150;
+    } 
+   }
 ////
 
 
 
 //
-//    if(analogRead(A0) > 852+50 && analogRead(A1) > 819+50  && analogRead(A2) > 792+50  && analogRead(A3) > 783+50 ){
-//     _kmotor.tien(0, (1 * M1_1));
-//    _kmotor.tien(1,0);
-//    delay(30);
-//
-//
-//
-//
-//    
-//     _kmotor.tien(0, (1 * M1_1));
-//    _kmotor.tien(1,250);
-//    delay(150);
-//     _kmotor.tien(0, 0);
-//    _kmotor.tien(1,0);
-//    delay(30);
-//     _kmotor.tien(0, -50);
-//    _kmotor.tien(1,-50);
-//    delay(30);
-//         _kmotor.tien(0, 0);
-//    _kmotor.tien(1,0);
-//    delay(10000);
-//    }
-
+   if(OK_GapVach == 3 && demSoLo1>=200){
+    if(analogRead(A0) > 852+50 && analogRead(A1) > 819+50  && analogRead(A2) > 792+50  && analogRead(A3) > 783+50 ){
+     _kmotor.tien(0, (1 * M1_1));
+    _kmotor.tien(1,0);
+    delay(150);
 
 
 
 
     
-//   if(OK_GapVach == 2 && socambien >= 6 && millis() > time_now+1000){
-//    
-//         _kmotor.tien(0,0);
-//    _kmotor.tien(1,0); 
-//    
-//    delay(100000);
-//   } 
-//   
+     _kmotor.tien(0, (1 * M1_1));
+    _kmotor.tien(1,150);
+    delay(155);
+     _kmotor.tien(0, 0);
+    _kmotor.tien(1,0);
+    delay(30);
+     _kmotor.tien(0, -50);
+    _kmotor.tien(1,-50);
+    delay(30);
+         _kmotor.tien(0, 0);
+    _kmotor.tien(1,0);
+    delay(10000);
+    }
 
-   
-
-//   Serial.println (demencoder);
-//   Serial.println("----");
-//   if(OK_ChayThang==1){
-//       chaythang ();
-//       OK_ChayThang = 0;
-//   }
-//   
-//    dolinecong();
-//
-
+   }
     
-//   if ((a == 0)&&(demencoder <=390)){
-//     dolinethang();
-//     b = 1;
-//   }
-//    if ((b == 1)&&(demencoder > 390)){
-//     dolinecong();
-//     c = 1;
-//   }
-//     if ((c == 1)&&(demencoder >= 650)){
-//     dolinethang();
-//   }
-//        if (demencoder >= 950){
-//     dung();
-//   }
+
+
    socambien = 0;
 }
