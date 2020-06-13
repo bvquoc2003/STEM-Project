@@ -177,39 +177,9 @@ bool isEnd = false, isStop = false;
 void loop() {
   XuLySoLo1();
   XuLySoLo2();
-  if (isEnd) {
-    if (isStop) {
-      _kmotor.tien(0,0);
-      _kmotor.tien(1,0);
-      return;
-    }
-    _kmotor.tien(0,255);
-    _kmotor.tien(1,255);
-    if (demSoLo1 == 13) {
-      isStop = true;
-    }
-    return;
-  }
-  if (demSoLo1 <= 46) {
-    _kmotor.tien(0,255);
-    _kmotor.tien(1,255);
-  } else if (demSoLo1 <= 53){
-    _kmotor.tien(0,255);
-    _kmotor.tien(1,52);
-  } else {
-    _kmotor.tien(0,0);
-    _kmotor.tien(1,0);
-    stepp++;
-    if (stepp<4) demSoLo1 = 0;
-    else {
-      isEnd = true;
-      demSoLo1 = 0;
-    }
-    
-    
-  }
+  
   Serial.println(demSoLo1/2);
-  Serial.println(demSoLo2/2);
+  
 }
 
 
