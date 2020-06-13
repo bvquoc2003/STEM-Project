@@ -325,7 +325,7 @@ void loop() {
    
 
     
-   if(OK_GapVach == 1 && socambien >= 7 && ok_chayham == 0){
+   if(OK_GapVach == 1 && socambien >= 7 && ok_chayham == 0 && millis() >= 1000){
     digitalWrite(13,HIGH);
     OK_GapVach = 2;
     time_now = millis();
